@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corner Shelf</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        body {
+            background: #f4f1eb;
+            color: #29251f;
+            font-family: Arial, sans-serif;
+        }
+
+        .topbar {
+            background: #2f3e36;
+            color: #fff;
+            padding: 16px 0;
+        }
+
+        .site-name {
+            font-size: 21px;
+            font-weight: 600;
+        }
+
+        .add-link {
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,.45);
+            padding: 7px 14px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .add-link:hover {
+            background: rgba(255,255,255,.08);
+            color: #fff;
+        }
+
+        .intro {
+            padding: 38px 0 24px;
+        }
+
+        .intro h1 {
+            font-size: 30px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .intro p {
+            color: #777168;
+            margin: 0;
+        }
+
+        .filters {
+            background: #fff;
+            border: 1px solid #ded9d0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 18px;
+        }
+
+        .book-table {
+            background: #fff;
+            border: 1px solid #ded9d0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: #ebe7df;
+            color: #504a43;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 14px 15px;
+            border-bottom: 1px solid #d9d3ca;
+        }
+
+        .table tbody td {
+            padding: 16px 15px;
+            vertical-align: middle;
+            border-color: #eeeae4;
+        }
+
+        .book-name {
+            font-weight: 600;
+            color: #302b25;
+        }
+
+        .genre {
+            color: #6e756f;
+            font-size: 14px;
+        }
+
+        .price {
+            font-weight: 600;
+        }
+
+        .edit-link {
+            color: #2f3e36;
+            text-decoration: none;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+
+        .delete-btn {
+            border: none;
+            background: none;
+            color: #a34848;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .edit-link:hover,
+        .delete-btn:hover {
+            text-decoration: underline;
+        }
+
+        .empty-box {
+            background: #fff;
+            border: 1px solid #ded9d0;
+            border-radius: 8px;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .empty-box h4 {
+            font-weight: 600;
+        }
+
+        .empty-box p {
+            color: #777168;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div class="site-name">Corner Shelf</div>
+
+            <a href="/add" class="add-link">
+                + Add Book
+            </a>
+        </div>
+    </div>
+
+    <main class="container">
+
+        <div class="intro">
+            <h1>Book Collection</h1>
+            <p>A simple list of books in the collection.</p>
+        </div>
+
+        <form action="/" method="GET" class="filters row g-2" id="filterForm">
+            <div class="col-md-7">
+                <input
+                    type="text"
+                    id="search"
+                    name="search"
+                    value="<%= search %>"
+                    class="form-control"
+                    placeholder="Search by book name..."
+                >
+            </div>
+
+            <div class="col-md-3">
+                <select id="sort" name="sort" class="form-select">
+                    <option value="">Sort by price</option>
+                    <option value="low" <%= sort === "low" ? "selected" : "" %>>
+                        Low to High
+                    </option>
+                    <option value="high" <%= sort === "high" ? "selected" : "" %>>
+                        High to Low
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-dark w-100">
+                    Search
+                </button>
+            </div>
+        </form>
+
+        <% if (products && products.length > 0) { %>
+
+            <div class="book-table">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Book</th>
+                                <th style="width: 20%;">Genre</th>
+                                <th style="width: 15%;">Price</th>
+                                <th style="width: 25%;">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="productTable">
+                            <% products.forEach(product => { %>
+                                <tr>
+                                    <td>
+                                        <div class="book-name">
+                                            <%= product.name %>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="genre">
+                                            <%= product.category %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="price">
+                                            ₹<%= product.price %>
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <a
+                                            href="/edit/<%= product._id %>"
+                                            class="edit-link"
+                                        >
+                                            Edit
+                                        </a>
+
+                                        <a
+                                            href="/delete/<%= product._id %>"
+                                            class="delete-btn"
+                                            onclick="return confirm('Remove this book from the collection?')"
+                                        >
+                                            Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        <% } else { %>
+
+            <div class="empty-box">
+                <h4>No books found</h4>
+                <p>Try another search or add a new book.</p>
+
+                <a href="/add" class="btn btn-dark">
+                    Add Book
+                </a>
+            </div>
+
+        <% } %>
+
+    </main>
+
+    <script src="/script.js"></script>
+</body>
+</html>
